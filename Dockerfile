@@ -21,7 +21,6 @@ RUN install-php-extensions \
 
 # Copy dependencies
 COPY --from=wp-core /usr/src/wordpress /app/public
-COPY --from=composer /app/build-dependancies /app/build-dependancies
 COPY --from=composer /app/build-dependancies/wp-content/plugins /app/public/wp-content/plugins
 
 # Copy Caddyfile and php.ini
@@ -40,9 +39,6 @@ ENV PAGER=cat
 # RUN apt-get update && apt-get install -y --no-install-recommends less \
 #    && rm -rf /var/lib/apt/lists/*
 
-# Make sure mu-plugins directory exists
-RUN mkdir -p "${WORDPRESS_TARGET_DIR}/wp-content/mu-plugins"
-
 # Install WP-CLI
 RUN curl -fsSL -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x /usr/local/bin/wp
@@ -51,8 +47,7 @@ RUN curl -fsSL -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/bui
 # RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Tidy up
-RUN rm -rf /app/build-dependancies/wp-content \
-    && rm -rf /app/build-dependancies/plugins \
+RUN rm -rf /app/build-dependancies \
     && rm -rf /app/public/wp-content/themes/twentytwentyfour \
     && rm -rf /app/public/wp-content/themes/twentytwentythree \
     && rm -rf /app/public/wp-content/plugins/akismet \
